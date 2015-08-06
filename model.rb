@@ -37,14 +37,19 @@ class Bank
 		}
 	end
 
+	# Adds a new manager
+	def add_manager(name, pin)
+		@db.execute("INSERT INTO managers (name,pin) VALUES (?,?)", name, pin)
+	end
+
 	# Adds new account with given name and pin, sets balance to 0
 	def add_account(name, pin)
 		@db.execute("INSERT INTO accounts (name,balance,pin) VALUES (?,?,?)", name, 0, pin)
 	end
 
-	# Returns true if name and pin match are found or false if not found
-	def verify_pin(name, pin)
-		@db.execute("SELECT 1 FROM accounts WHERE name = ? AND pin = ?", name, pin).length > 0
+	# Returns true if name and pin match are found or false if not found; table parameter should be either "accounts" or "managers"
+	def verify_pin(name, pin, table)
+		@db.execute("SELECT 1 FROM ? WHERE name = ? AND pin = ?", table, name, pin).length > 0
 	end
 
 	# Returns balance for an account
