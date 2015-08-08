@@ -1,28 +1,30 @@
 require_relative 'view'
 	
+### Contains methods to initialize BankAccount, Deposit/Withdraw money, and view current balance
 class BankAccount
 	def initialize (name, balance=0)
 		@name = name
 		@balance = balance
 	end
 
+### Shows user's current balance
 	def show_balance(pin_access)
-		if pin_access == pin || pin_access == bank_manager 
+		if pin_access == pin 
 			Dialog::display_balance
 		else
 			puts pin_error_message
 		end
 	end
-
-	def withdraw(pin_access, amount)
+### Lets user withdraw money
+	def do_withdraw(pin_access, amount)
 		if pin_access == pin 
 			@balance -= amount if @balance - amount > 0
 		else
 			puts pin_error_message
 		end
 	end
-
-	def deposit(pin_access, amount)
+### Lets user deposit money
+	def do_deposit(pin_access, amount)
 		if pin_access == pin
 			@balance += amount
 		else
@@ -44,6 +46,8 @@ class BankAccount
 	end
 end
 
+### The class that contains methods that make up the flow of the 
+### user's view/experience. 
 class BankFlow
 	def new_or_old_user
 		@response = Dialog::new_or_old_user
@@ -85,7 +89,7 @@ class BankFlow
 		elsif @action == "deposit" 
 			@dpin = Dialog::enter_pin
 			@damount = Dialog::deposit_amount
-			@user.deposit(@dpin, @damount)
+			@user.do_deposit(@dpin, @damount)
 			@user.show_balance(1234)
 			choice
 
@@ -93,7 +97,7 @@ class BankFlow
 		elsif @action == "withdraw" 
 			@wpin = Dialog::enter_pin
 			@wamount = Dialog::withdraw
-			@user.withdraw(@wpin, @wamount)
+			@user.do_withdraw(@wpin, @wamount)
 			@user.show_balance(1234)
 			choice
 
