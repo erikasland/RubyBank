@@ -137,12 +137,12 @@ class Account
 	end
 
 	# Subtracts amount from balance of account
-	def withdraw(name, pin, amount)
+	def withdraw(amount)
 		balance -= amount
 	end
 
 	# Add amount to balance of account
-	def deposit(name, pin, amount)
+	def deposit(amount)
 		balance += amount
 	end
 
