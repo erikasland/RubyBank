@@ -136,6 +136,7 @@ class Account
 		@balance = 0.0
 		@db = db
 		@new_account = new_account
+<<<<<<< HEAD
 	end
 
 	# Subtracts amount from balance of account
@@ -146,6 +147,19 @@ class Account
 	# Add amount to balance of account
 	def deposit(amount)
 		@balance += amount
+=======
+	end
+
+	# Subtracts amount from balance of account
+	def withdraw(name, pin, amount)
+		db.execute("UPDATE accounts SET balance = balance - ? WHERE name = ? AND pin
+		 = ?", amount, name, pin)
+	end
+
+	# Add amount to balance of account
+	def deposit(name, pin, amount)
+		db.execute("UPDATE accounts SET balance = balance + ? WHERE name = ? AND pin
+		 = ?", amount, name, pin)
 	end
 	
 	# Returns balance for an account
