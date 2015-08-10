@@ -152,14 +152,12 @@ class Account
 
 	# Subtracts amount from balance of account
 	def withdraw(name, pin, amount)
-		db.execute("UPDATE accounts SET balance = balance - ? WHERE name = ? AND pin
-		 = ?", amount, name, pin)
+		balance -= amount
 	end
 
 	# Add amount to balance of account
 	def deposit(name, pin, amount)
-		db.execute("UPDATE accounts SET balance = balance + ? WHERE name = ? AND pin
-		 = ?", amount, name, pin)
+		balance += amount
 	end
 	
 	# Returns balance for an account
