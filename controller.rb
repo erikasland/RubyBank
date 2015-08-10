@@ -1,80 +1,69 @@
 require_relative 'view'
 require_relative 'model'
 
-class BankFlow                                 # The BankFlow class that contains methods that make up the flow 
-    def signup_signin                            #   of the user's view/experience as they roll through the view.
-        response = Dialog::signup_signin
+class BankFlow
+  def signup_signin # Asks a user if they are have an pre-existing account.
+    response = Dialog::new_or_old_user
 
-        if response == "yes" # NOTE: retrieve old account information and send to ".account_choice" method.
-        
+    if response == "yes" 
+
     elsif response == "no"
-            make_an_account
+      make_an_account
 
-        else
-            signup_signin
-        end
+    else
+      signup_signin
     end
- 
-    def make_an_account # Asks user if they want to make an account. 
-        answer = Dialog::greeting
+  end
 
-        if @answer == "yes"
-            @name = Dialog::account_name
-            @initbalance = Dialog::account_balance
+  def make_an_account # Asks user if they want to make an account.
+    answer = Dialog::greeting
+
+    if @answer == "yes"
+      @name = Dialog::account_name
+      @initbalance = Dialog::account_balance
       @pin = Dialog::enter_pin
-      @account = Bank.new
-            @new_user = Customer.new(bank.db, @a_name, @initbalance)
-            account_choice
+      @account = Bank.new 
+      @new_user = Customer.new(bank.db, @a_name, @initbalance)
+      account_choice
 
-        elsif answer == "no"
-            Dialog::goodbye
+    elsif answer == "no"
+      Dialog::goodbye
 
-        else
-            make_an_account
-        end
+    else
+      make_an_account
     end
-    
-    def account_choice  # Asks user if they want to deposit/withdraw, view current balance, or end their session.
-        action = Dialog::how_can_we_help_you        
+  end
 
-        if action == "balance"                      
-      @new_user.balance(@name, @pin)            
-            account_choice
+  def account_choice # Asks user if they want to deposit/withdraw, view current balance, or end their session.
+    action = Dialog::how_can_we_help_you
 
-        elsif action == "deposit"                   
-            damount = Dialog::deposit_amount          
-            @new_user.deposit(@name, @pin, damount)
-            @new_user.balance(@pin)
-            account_choice
+    if action == "balance"
+      @new_user.balance(@name, @pin)
+      account_choice
 
-        elsif action == "withdraw"                  
-            wamount = Dialog::withdraw                
-            @new_user.withdraw(@name, @pin, wamount)
-            @new_user.balance(@pin)
-            account_choice
+    elsif action == "deposit"
+      damount = Dialog::deposit_amount
+      @new_user.deposit(@name, @pin, damount)
+      @new_user.balance(@pin)
+      account_choice
 
-        elsif action == "end"
-            Dialog::goodbye_cust
+    elsif action == "withdraw"
+      wamount = Dialog::withdraw
+      @new_user.withdraw(@name, @pin, wamount)
+      @new_user.balance(@pin)
+      account_choice
 
-        else
-            Dialog::wrong_entry
-            account_choice
-        end
+    elsif action == "end"
+      Dialog::goodbye_cust
+
+    else
+      Dialog::wrong_entry
+      account_choice
     end
+  end
 end
 
-BankFlow.new.signup_signin
-
-        #
-      # # #
-     #  #  #
-        #
-        #
-        #
-
-# Starts Ruby Bank
-
-
+BankFlow.new.signup_signin # Starts Ruby Bank
 
 
 

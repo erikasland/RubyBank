@@ -14,10 +14,6 @@ module Dialog
 		print "\nThat is too bad. We are a great bank. Suit yourself! Have a nice day!\n"
 	end
 
-	def self.goodbye2 # Explains that method is not yet available, check back later.			
-		print "\nThis is not yet a current working method in RubyBank. Check back in a few hours.\nGoodbye!\n\n"
-	end
-
 	def self.goodbye_cust # The goodbye message for a customer. 
 		print "\nHave a great day! We will look forward to your return!\n"
 	end
