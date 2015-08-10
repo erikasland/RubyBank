@@ -147,40 +147,7 @@ class Account
 	def deposit(amount)
 		@balance += amount
 	end
-
-	# Subtracts amount from balance of account
-	def withdraw(name, pin, amount)
-		db.execute("UPDATE accounts SET balance = balance - ? WHERE name = ? AND pin
-		 = ?", amount, name, pin)
-	end
-
-	# Add amount to balance of account
-	def deposit(name, pin, amount)
-		db.execute("UPDATE accounts SET balance = balance + ? WHERE name = ? AND pin
-		 = ?", amount, name, pin)
-	end
-
-	# Returns balance for an account
-	def return_balance(customer_id)
-		customer = db.execute("SELECT * FROM accounts WHERE customer_id = ?", 
-			customer_id)
-		return customer[0]["balance"]
-	end
-
-	# Subtracts amount from balance of an account
-	def save_to_db
-		if new_account
-			db.execute("INSERT INTO accounts (customer_id,balance) VALUES (?,?)", 
-				customer_id, balance)
-		else
-			db.execute("UPDATE accounts SET balance = #{balance} WHERE customer_id = 
-				?", customer_id)
-		end
->>>>>>> c9a2c1f... Added more methods, refactored classes
-	end
-end
-
-<<<<<<< HEAD
+	
 	# Returns balance for an account
 	def return_balance(customer_id)
 		customer = db.execute("SELECT * FROM accounts WHERE customer_id = ?", 
@@ -199,20 +166,3 @@ end
 		end
 	end
 end
-=======
-
-# Testing stuff.....
-
-# bank = Bank.new
-# bank.add_customer("Bob", 1234)
-# cust_id = bank.find_customer_id("Bob", 1234)
-# 	puts cust_id
-# bank.add_account(cust_id)
-# acc = Account.new(cust_id, bank.db)
-# acc.balance = 500
-# 	puts acc.balance
-# acc.save_to_db
-# 	puts acc.return_balance(cust_id)
-# bank.add_manager("Joe the plumber", 1234)
-# puts bank.account_list("Joe the plumber",1234).count
->>>>>>> c9a2c1f... Added more methods, refactored classes
