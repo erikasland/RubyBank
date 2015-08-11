@@ -19,10 +19,24 @@ module Dialog
 	end
 
 	def self.account_name # this should be the dialog around initializing your bank account. You give your account name.	
-		print "\nplease enter your the name you wish to associate with the account."
+		print "\nPlease enter your the name you wish to associate with the account."
 		gets.chomp.downcase
 	end
 
+  def self.signin_name
+    print "\nPlease enter your account name."
+    gets.chomp.downcase
+  end
+
+  def self.signin_pin
+    print "\nPlease enter your account pin."
+    gets.chomp.downcase
+  end
+
+  def self.signin_pin
+    print "\n Our records inticate that you already have an account with us."
+  end
+  
 	def self.account_balance # this should be the dialog around initializing your bank account. You give your account password.	
 		print "\nplease enter the initial balance you would like to deposit into your new account."
 		gets.chomp.downcase.to_i

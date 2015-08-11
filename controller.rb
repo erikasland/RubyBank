@@ -2,10 +2,11 @@ require_relative 'view'
 require_relative 'model'
 
 class BankFlow
-  def signup_signin # Asks a user if they are have an pre-existing account.
+  def signup_signin # Asks a user if they are have a pre-existing account.
     response = Dialog::new_or_old_user
 
     if response == "yes" 
+      signin
 
     elsif response == "no"
       make_an_account
@@ -15,16 +16,32 @@ class BankFlow
     end
   end
 
+  def signin
+    cust_name = Dialog::signin_name
+    cust_pin = Dialog::signin_pin
+    cust_id = Bank.find_customer_id(cust_name, cust_pin)
+    bank.load_customer(cust_id)
+    account_choice
+  end
+
   def make_an_account # Asks user if they want to make an account.
     answer = Dialog::greeting
 
-    if @answer == "yes"
-      @name = Dialog::account_name
-      @initbalance = Dialog::account_balance
-      @pin = Dialog::enter_pin
-      @account = Bank.new 
-      @new_user = Customer.new(bank.db, @a_name, @initbalance)
-      account_choice
+    if answer == "yes"
+          @name = Dialog::account_name
+          @initbalance = Dialog::account_balance
+          @pin = Dialog::enter_pin
+
+        if Bank.name_exists?(@name, customers) == true
+          Dialog::existing_account_error
+          signup_signin
+
+        else
+          @account = Bank.new 
+          @new_user = Customer.new(bank.db, @name, @initbalance)
+          @new_user.add_to_db
+          account_choice
+        end
 
     elsif answer == "no"
       Dialog::goodbye
@@ -64,8 +81,3 @@ class BankFlow
 end
 
 BankFlow.new.signup_signin # Starts Ruby Bank
-
-
-
-
-
