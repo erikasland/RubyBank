@@ -165,18 +165,11 @@ class Account
 	end
 end
 
-
-# Testing stuff.....
-
-# bank = Bank.new
-# bank.add_customer("Bob", 1234)
-# cust_id = bank.find_customer_id("Bob", 1234)
-# 	puts cust_id
-# bank.add_account(cust_id)
-# acc = Account.new(cust_id, bank.db)
-# acc.balance = 500
-# 	puts acc.balance
-# acc.save_to_db
-# 	puts acc.return_balance(cust_id)
-# bank.add_manager("Joe the plumber", 1234)
-# puts bank.account_list("Joe the plumber",1234).count
+bank = Bank.new
+cust = Customer.new(bank.db, "erik", 123)
+cust.add_to_db
+cust_id = bank.find_customer_id("erik", 123)
+account = Account.new(bank.db, cust_id)
+account.save_to_db
+acc_list = bank.account_list("erik", 123)
+puts acc_list
