@@ -30,14 +30,14 @@ module Dialog
 
   def self.signin_pin
     print "\nPlease enter your account pin."
-    gets.chomp.downcase
+    gets.chomp.downcase.to_i
   end
 
-  def self.signin_pin
-    print "\n Our records inticate that you already have an account with us."
+  def self.existing_account_error
+    print "\n Our records inticate that you already have an account with us. Please sign in to your account."
   end
-  
-	def self.account_balance # this should be the dialog around initializing your bank account. You give your account password.	
+
+	def self.accou1nt_balance # this should be the dialog around initializing your bank account. You give your account password.	
 		print "\nplease enter the initial balance you would like to deposit into your new account."
 		gets.chomp.downcase.to_i
 	end
@@ -48,9 +48,10 @@ module Dialog
 		gets.chomp.downcase
 	end
 
-	def self.display_balance # Should be dialog around user request to check balance.
-		print "\nYour current balance is: $"
-	end
+	def self.pick_your_account
+		print "\nPlease choose your account please."
+		gets.chomp.downcase.to_i
+	end 
 
 	def self.withdraw # Should be dialog around user request to withdraw money from their account.
 		print "'\nPlease enter the amount you would like to withdraw."

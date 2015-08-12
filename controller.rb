@@ -2,7 +2,13 @@ require_relative 'view'
 require_relative 'model'
 
 class BankFlow
-  def signup_signin # Asks a user if they are have a pre-existing account.
+  attr_accessor :bank
+
+  def initialize
+    @bank = Bank.new
+  end
+
+  def signup_signin # Asks a user if they have a pre-existing account.
     response = Dialog::new_or_old_user
 
     if response == "yes" 
@@ -17,10 +23,9 @@ class BankFlow
   end
 
   def signin
-    cust_name = Dialog::signin_name
-    cust_pin = Dialog::signin_pin
-    cust_id = Bank.find_customer_id(cust_name, cust_pin)
-    bank.load_customer(cust_id)
+    @cust_name = Dialog::signin_name
+    @cust_pin = Dialog::signin_pin
+    @cust_id = @bank.find_customer_id(cust_name, cust_pin.to_i)
     account_choice
   end
 
@@ -28,20 +33,21 @@ class BankFlow
     answer = Dialog::greeting
 
     if answer == "yes"
-          @name = Dialog::account_name
-          @initbalance = Dialog::account_balance
-          @pin = Dialog::enter_pin
+      @name = Dialog::account_name
+      @pin = Dialog::enter_pin
 
-        if Bank.name_exists?(@name, customers) == true
-          Dialog::existing_account_error
-          signup_signin
+      if bank.name_exists?(@name, "customers") == false
+        @customer = Customer.new(bank.db, @name, @pin)
+        @customer.add_to_db
+        @customer_id = @bank.find_customer_id(@name, @pin) 
+        @account = Account.new(bank.db, @customer_id)
+        @account.save_to_db 
+        account_choice
 
-        else
-          @account = Bank.new 
-          @new_user = Customer.new(bank.db, @name, @initbalance)
-          @new_user.add_to_db
-          account_choice
-        end
+      else
+        Dialog::existing_account_error
+        signin
+      end
 
     elsif answer == "no"
       Dialog::goodbye
@@ -55,19 +61,24 @@ class BankFlow
     action = Dialog::how_can_we_help_you
 
     if action == "balance"
-      @new_user.balance(@name, @pin)
+      puts @bank.account_list(@name, @pin)
+      account_num = Dialog::pick_your_account
+      account_choice
+      account_num.return_balance(@customer_id)
+      balance = @account.save_to_db
+      puts balance
       account_choice
 
     elsif action == "deposit"
-      damount = Dialog::deposit_amount
-      @new_user.deposit(@name, @pin, damount)
-      @new_user.balance(@pin)
+      puts @bank.account_list(@name, @pin)
+      account_num = Dialog::pick_your_account
+      amount = Dialog::deposit_amount
+      @account.deposit(amount)
+      save_to_db
       account_choice
 
     elsif action == "withdraw"
       wamount = Dialog::withdraw
-      @new_user.withdraw(@name, @pin, wamount)
-      @new_user.balance(@pin)
       account_choice
 
     elsif action == "end"
