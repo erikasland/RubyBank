@@ -25,7 +25,7 @@ class BankFlow
   def signin
     @cust_name = Dialog::signin_name
     @cust_pin = Dialog::signin_pin
-    @cust_id = @bank.find_customer_id(cust_name, cust_pin.to_i)
+    @cust_id = bank.find_customer_id(@cust_name, @cust_pin)
     account_choice
   end
 
@@ -78,7 +78,7 @@ class BankFlow
       account_choice
 
     elsif action == "withdraw"
-      wamount = Dialog::withdraw
+      wamount = Dialog::withdraw;
       account_choice
 
     elsif action == "end"
