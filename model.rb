@@ -164,12 +164,3 @@ class Account
 		end
 	end
 end
-
-bank = Bank.new
-cust = Customer.new(bank.db, "erik", 123)
-cust.add_to_db
-cust_id = bank.find_customer_id("erik", 123)
-account = Account.new(bank.db, cust_id)
-account.save_to_db
-acc_list = bank.account_list("erik", 123)
-puts acc_list
