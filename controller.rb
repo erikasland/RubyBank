@@ -25,8 +25,13 @@ class BankFlow
   def signin
     @name = Dialog::signin_name
     @pin = Dialog::signin_pin
-    @cust_id = bank.find_customer_id(@name, @pin)
-    account_choice
+    if bank.name_exists?(@name, "customers") == true && bank.verify_pin(@name, @pin, "customers") == true
+      account_choice
+
+    else
+      Dialog::wrong_username_or_pin
+      signup_signin
+    end
   end
 
   def make_an_account # Asks user if they want to make an account.
@@ -63,35 +68,57 @@ class BankFlow
     if action == "balance"
       Dialog::space
       acct_list = @bank.customer_accounts(@name, @pin)
-      puts acct_list[0]["account_id"]
+      accounts = acct_list[0]["account_id"].to_s
+      Dialog::account_prompt 
+      puts accounts
       acct_num = Dialog::pick_your_account
-      account = bank.load_account(acct_num)
-      cust_id = bank.find_customer_id(@name, @pin)
-      puts account.return_balance(cust_id)
+      if acct_num != accounts.to_i
+        Dialog::fixnum_error
+
+      else
+        account = bank.load_account(acct_num)
+        cust_id = bank.find_customer_id(@name, @pin)
+        puts account.return_balance(cust_id)
+
+      end
       account_choice
 
     elsif action == "deposit"
       Dialog::space
       acct_list = @bank.customer_accounts(@name, @pin)
-      puts acct_list[0]["account_id"]
+      accounts = acct_list[0]["account_id"].to_s
+      Dialog::account_prompt 
+      puts accounts
       acct_num = Dialog::pick_your_account
-      account = bank.load_account(acct_num)
-      amount = Dialog::deposit_amount
-      account.deposit(amount)
-      account.save_to_db
+      if acct_num != accounts.to_i
+        Dialog::fixnum_error
+
+      else
+        account = bank.load_account(acct_num)
+        amount = Dialog::deposit_amount
+        account.deposit(amount)
+        account.save_to_db
+      end
       account_choice
 
     elsif action == "withdraw"
       Dialog::space
       acct_list = @bank.customer_accounts(@name, @pin)
-      puts acct_list[0]["account_id"]
+      accounts = acct_list[0]["account_id"].to_s
+      Dialog::account_prompt 
+      puts accounts
       acct_num = Dialog::pick_your_account
-      account = bank.load_account(acct_num)
-      amount = Dialog::deposit_amount
-      account.withdraw(amount)
-      account.save_to_db
-      account_choice
+      if acct_num != accounts.to_i
+        Dialog::fixnum_error
 
+      else
+        account = bank.load_account(acct_num)
+        amount = Dialog::withdraw_amount
+        account.withdraw(amount)
+        account.save_to_db
+      end
+      account_choice
+      
     elsif action == "end"
       Dialog::goodbye_cust
 
