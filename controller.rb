@@ -23,9 +23,9 @@ class BankFlow
   end
 
   def signin
-    @cust_name = Dialog::signin_name
-    @cust_pin = Dialog::signin_pin
-    @cust_id = bank.find_customer_id(@cust_name, @cust_pin)
+    @name = Dialog::signin_name
+    @pin = Dialog::signin_pin
+    @cust_id = bank.find_customer_id(@name, @pin)
     account_choice
   end
 
@@ -61,26 +61,35 @@ class BankFlow
     action = Dialog::how_can_we_help_you
 
     if action == "balance"
-      puts @bank.account_list(@name, @pin)
-      account_num = Dialog::pick_your_account
-      account_choice
-      account_num.return_balance(@customer_id)
-      balance = @account.save_to_db
-      puts balance
+      Dialog::space
+      acct_list = @bank.customer_accounts(@name, @pin)
+      puts acct_list[0]["account_id"]
+      acct_num = Dialog::pick_your_account
+      account = bank.load_account(acct_num)
+      cust_id = bank.find_customer_id(@name, @pin)
+      puts account.return_balance(cust_id)
       account_choice
 
     elsif action == "deposit"
+      Dialog::space
       acct_list = @bank.customer_accounts(@name, @pin)
       puts acct_list[0]["account_id"]
       acct_num = Dialog::pick_your_account
       account = bank.load_account(acct_num)
       amount = Dialog::deposit_amount
       account.deposit(amount)
-      save_to_db
+      account.save_to_db
       account_choice
 
     elsif action == "withdraw"
-      wamount = Dialog::withdraw;
+      Dialog::space
+      acct_list = @bank.customer_accounts(@name, @pin)
+      puts acct_list[0]["account_id"]
+      acct_num = Dialog::pick_your_account
+      account = bank.load_account(acct_num)
+      amount = Dialog::deposit_amount
+      account.withdraw(amount)
+      account.save_to_db
       account_choice
 
     elsif action == "end"
