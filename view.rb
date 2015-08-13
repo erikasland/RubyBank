@@ -1,55 +1,54 @@
 module Dialog
 	def self.new_or_old_user # Asks if you have an account already.
-		print "\nHello! Do you have a pre-existing account with us? ('yes' or 'no')\n"
+		print "\nHello! Do you have a pre-existing account with us? ('yes' or 'no'): "
 		gets.chomp.downcase
 	end
 
 	def self.greeting # Initial greeting (first thing user should see straight after entering ruby <file> into the command line)
 		print "\nWelcome to RubyBank, where all of your financial dreams come true."
-		print "\nWould you like to make an account? ('yes' or 'no')" 
+		print "\n\nWould you like to make an account? ('yes' or 'no'): " 
 		gets.chomp.downcase
 	end
 
 	def self.goodbye # Says goodbye and mourns the loss of user.
-		print "\nThat is too bad. We are a great bank. Suit yourself! Have a nice day!\n"
+		print "\nThat is too bad. We are a great bank. Suit yourself! Have a nice day!\n\n"
 	end
 
 	def self.goodbye_cust # The goodbye message for a customer. 
-		print "\nHave a great day! We will look forward to your return!\n"
+		print "\nHave a great day! We will look forward to your return!\n\n"
 	end
 
 	def self.account_name # this should be the dialog around initializing your bank account. You give your account name.	
-		print "\nPlease enter your the name you wish to associate with the account."
+		print "\nPlease enter your the name you wish to associate with the account: "
 		gets.chomp.downcase
 	end
 
   def self.signin_name
-    print "\nPlease enter your account name."
+    print "\nPlease enter your account name: "
     gets.chomp.downcase
   end
 
   def self.signin_pin
-    print "\nPlease enter your account pin."
+    print "\nPlease enter your account pin: "
     gets.chomp.downcase.to_i
   end
 
   def self.existing_account_error
-    print "\n Our records inticate that you already have an account with us. Please sign in to your account."
+    print "\n Our records inticate that you already have an account with us. Please sign in to your account.\n"
   end
 
-	def self.accou1nt_balance # this should be the dialog around initializing your bank account. You give your account password.	
-		print "\nplease enter the initial balance you would like to deposit into your new account."
-		gets.chomp.downcase.to_i
+	def self.how_can_we_help_you # Dialog around asking user to enter their choice.
+		print "\nHow can we help you? Would you like to 'deposit' or 'withdraw' to/from your account, view your current 'balance', or 'end' your session?"
+		print "\n\n(Please enter 'deposit', 'withdraw', 'balance', or 'end'): "
+		gets.chomp.downcase 
 	end
 
-	def self.how_can_we_help_you # Dialog around asking user to enter their choice.
-		print "\nHow can we help you? Would you like to 'deposit' or 'withdraw' to/from your account, view your current 'balance', or 'end' your session"
-		print "(Please enter 'deposit', 'withdraw', 'balance', or 'end')"
-		gets.chomp.downcase
+	def self.space
+		print "\n\n\n"
 	end
 
 	def self.pick_your_account
-		print "\nPlease choose your account please."
+		print "\n\n\nYour current account numbers are displayed above. Please enter your account number please: "
 		gets.chomp.downcase.to_i
 	end 
 
@@ -59,12 +58,12 @@ module Dialog
 	end
 	
 	def self.deposit_amount # Asks for amount you would like to deposit
-		print "\nPlease enter the ammount you would like to deposit."
+		print "\nPlease enter the amount you would like to deposit: "
 		gets.chomp.downcase.to_i
 	end
 
 	def self.enter_pin  # Asks you to enter your PIN number.
-		print "\nPlease enter your unique PIN number."
+		print "\nPlease enter your unique PIN number: "
 		gets.chomp.downcase.to_i
 	end
 

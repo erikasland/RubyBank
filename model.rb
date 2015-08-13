@@ -138,12 +138,12 @@ class Account
 
 	# Subtracts amount from balance of account
 	def withdraw(amount)
-		balance -= amount
+		@balance -= amount
 	end
 
 	# Add amount to balance of account
 	def deposit(amount)
-		balance += amount
+		@balance += amount
 	end
 
 	# Returns balance for an account
