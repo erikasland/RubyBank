@@ -47,8 +47,12 @@ module Dialog
 		print "\n\n\n"
 	end
 
+	def self.account_prompt
+		puts "Your total accounts: " 
+	end
+
 	def self.pick_your_account
-		print "\n\n\nYour current account numbers are displayed above. Please enter your account number please: "
+		print "\n\n\nYour account number is displayed above. Please enter your account number: "
 		gets.chomp.downcase.to_i
 	end 
 
@@ -59,6 +63,11 @@ module Dialog
 	
 	def self.deposit_amount # Asks for amount you would like to deposit
 		print "\nPlease enter the amount you would like to deposit: "
+		gets.chomp.downcase.to_i
+	end
+
+	def self.withdraw_amount # Asks for amount you would like to deposit
+		print "\nPlease enter the amount you would like to withdraw: "
 		gets.chomp.downcase.to_i
 	end
 
@@ -75,7 +84,11 @@ module Dialog
 		print "\nI don't understand. You are mumbling. Please say 'yes' or 'no'."
 	end
 
-	def self.not_fixnum_error # Flags a user that inputs anything aside from a Fixnum and instructs them to enter a number again.
-		print "That was an incorrect entry. Your entry can ONLY be a number (example: 123). Restart from square one and be careful this time!"
+	def self.wrong_username_or_pin
+		print "\nYou have either entered an incorrect name or PIN. Please try again.\n"
+	end
+
+	def self.fixnum_error
+		print "\nIncorrect entry. Your account number should be a number. Please enter only that number.\n"
 	end
 end
