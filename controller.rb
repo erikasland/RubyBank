@@ -70,10 +70,12 @@ class BankFlow
       account_choice
 
     elsif action == "deposit"
-      puts @bank.account_list(@name, @pin)
-      account_num = Dialog::pick_your_account
+      acct_list = @bank.customer_accounts(@name, @pin)
+      puts acct_list[0]["account_id"]
+      acct_num = Dialog::pick_your_account
+      account = bank.load_account(acct_num)
       amount = Dialog::deposit_amount
-      @account.deposit(amount)
+      account.deposit(amount)
       save_to_db
       account_choice
 
