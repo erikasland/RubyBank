@@ -44,31 +44,26 @@ module Dialog
 	end
 
 	def self.space
-		print "\n\n\n"
+		print "\n\n"
 	end
 
 	def self.account_prompt
-		puts "Your total accounts: " 
+		print "Your total accounts: " 
 	end
 
 	def self.pick_your_account
 		print "\n\n\nYour account number is displayed above. Please enter your account number: "
 		gets.chomp.downcase.to_i
 	end 
-
-	def self.withdraw # Should be dialog around user request to withdraw money from their account.
-		print "'\nPlease enter the amount you would like to withdraw."
-		gets.chomp.downcase.to_i
-	end
 	
 	def self.deposit_amount # Asks for amount you would like to deposit
 		print "\nPlease enter the amount you would like to deposit: "
-		gets.chomp.downcase.to_i
+		gets.chomp.downcase.to_f
 	end
 
 	def self.withdraw_amount # Asks for amount you would like to deposit
 		print "\nPlease enter the amount you would like to withdraw: "
-		gets.chomp.downcase.to_i
+		gets.chomp.downcase.to_f
 	end
 
 	def self.enter_pin  # Asks you to enter your PIN number.

@@ -108,7 +108,9 @@ class Bank
 	def load_account(account_id)
 		account = db.execute("SELECT * FROM accounts WHERE account_id = ?",
 			account_id)
-		Account.new(db, account[0]["customer_id"], false)
+		new_instance = Account.new(db, account[0]["customer_id"], false)
+		new_instance.balance = account[0]["balance"]
+		new_instance
 	end
 end
 
