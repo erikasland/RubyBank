@@ -64,8 +64,8 @@ class BankFlow
 
   def account_choice # Asks user if they want to deposit/withdraw, view current balance, or end their session.
     action = Dialog::how_can_we_help_you
-
-    if action == "balance"
+    case action
+    when "balance"
       Dialog::space
       @acct_list = @bank.customer_accounts(@name, @pin)
       Dialog::account_prompt 
@@ -81,7 +81,7 @@ class BankFlow
       end
       account_choice
 
-    elsif action == "deposit"
+    when "deposit"
       Dialog::space
       @acct_list = @bank.customer_accounts(@name, @pin) 
       Dialog::account_prompt 
@@ -92,13 +92,16 @@ class BankFlow
 
       else
         account = bank.load_account(@acct_num)
-        amount = Dialog::deposit_amount
+        amount = -1
+        while amount < 0
+          amount = Dialog::deposit_amount
+        end
         account.deposit(amount)
         account.save_to_db
       end
       account_choice
 
-    elsif action == "withdraw"
+    when "withdraw"
       Dialog::space
       @acct_list = @bank.customer_accounts(@name, @pin) 
       Dialog::account_prompt 
@@ -106,16 +109,18 @@ class BankFlow
       @acct_num = Dialog::pick_your_account
       if !@account_id_array.include?(@acct_num)
         Dialog::fixnum_error
-
       else
         account = bank.load_account(@acct_num)
-        amount = Dialog::withdraw_amount
+        amount = -1
+        while amount < 0
+          amount = Dialog::withdraw_amount
+        end
         account.withdraw(amount)
         account.save_to_db
       end
       account_choice
       
-    elsif action == "end"
+    when "end"
       Dialog::goodbye_cust
 
     else

@@ -19,7 +19,8 @@ module Dialog
   end
 
   def self.account_name # this should be the dialog around initializing your bank account. You give your account name.  
-    print "\nPlease enter your the name you wish to associate with the account: "
+    print "\nPlease enter your the name you wish to associate with the
+     account: "
     gets.chomp.downcase
   end
 
@@ -37,7 +38,7 @@ module Dialog
     print "\n Our records inticate that you already have an account with us. Please sign in to your account.\n"
   end
 
-  def self.how_can_we_help_you # Dialog around asking user to enter their choice.
+  def self.how_can_we_help_you # Dialog asking user to enter their choice.
     print "\nHow can we help you? Would you like to 'deposit' or 'withdraw' to/from your account, view your current 'balance', or 'end' your session?"
     print "\n\n(Please enter 'deposit', 'withdraw', 'balance', or 'end'): "
     gets.chomp.downcase 
@@ -56,12 +57,18 @@ module Dialog
     gets.chomp.downcase.to_i
   end 
   
+  def self.positive_number_warning
+    puts "\nEntered amount must be a positive number."
+  end
+
   def self.deposit_amount # Asks for amount you would like to deposit
+    positive_number_warning
     print "\nPlease enter the amount you would like to deposit: "
     gets.chomp.downcase.to_f
   end
 
   def self.withdraw_amount # Asks for amount you would like to deposit
+    positive_number_warning
     print "\nPlease enter the amount you would like to withdraw: "
     gets.chomp.downcase.to_f
   end
