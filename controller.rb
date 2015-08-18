@@ -69,7 +69,7 @@ class BankFlow
       Dialog::space
       @acct_list = @bank.customer_accounts(@name, @pin)
       Dialog::account_prompt 
-      account_info
+      @account_id_array = Display::account_info(@acct_list)
       @acct_num = Dialog::pick_your_account
       if !@account_id_array.include?(@acct_num)
         Dialog::fixnum_error
@@ -80,16 +80,14 @@ class BankFlow
         puts @account.return_balance(@cust_id)
       end
       account_choice
-
     when "deposit"
       Dialog::space
       @acct_list = @bank.customer_accounts(@name, @pin) 
       Dialog::account_prompt 
-      account_info
+      Display::account_info(@acct_list)
       @acct_num = Dialog::pick_your_account
       if !@account_id_array.include?(@acct_num)
         Dialog::fixnum_error
-
       else
         account = bank.load_account(@acct_num)
         amount = -1
@@ -100,12 +98,11 @@ class BankFlow
         account.save_to_db
       end
       account_choice
-
     when "withdraw"
       Dialog::space
       @acct_list = @bank.customer_accounts(@name, @pin) 
       Dialog::account_prompt 
-      account_info
+      Display::account_info(@acct_list)
       @acct_num = Dialog::pick_your_account
       if !@account_id_array.include?(@acct_num)
         Dialog::fixnum_error
@@ -118,22 +115,12 @@ class BankFlow
         account.withdraw(amount)
         account.save_to_db
       end
-      account_choice
-      
+      account_choice 
     when "end"
       Dialog::goodbye_cust
-
     else
       Dialog::wrong_entry
       account_choice
-    end
-  end
-
-  def account_info
-    @account_id_array = []
-    @acct_list.each do |a|
-    print a["account_id"]
-    @account_id_array.push(a["account_id"])
     end
   end
 end
