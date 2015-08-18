@@ -102,6 +102,7 @@ module Display
   def self.account_info(acct_list)
     account_id_array = []
     acct_list.each do |a|
+      print "\n"
       print 'Account #' + a["account_id"].to_s + "  -----  " + "Balance: " +
       a["balance"].to_s
       account_id_array.push(a["account_id"])
