@@ -89,7 +89,7 @@ module Dialog
 
   def self.wrong_username_or_pin
     print "\nYou have either entered an incorrect name or PIN. Please try again"
-    + ",\n"
+    print ",\n"
   end
 
   def self.fixnum_error
