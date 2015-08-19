@@ -62,73 +62,66 @@ class BankFlow
     end
   end
 
-  def account_choice # Asks user if they want to deposit/withdraw, view current balance, or end their session.
-    action = Dialog::how_can_we_help_you
+  def show_accounts
+    Dialog::space
+    @acct_list = @bank.customer_accounts(@name, @pin)
+    Dialog::account_prompt
+    @account_id_array = Display::account_info(@acct_list)
+  end
 
-    if action == "balance"
-      Dialog::space
-      @acct_list = @bank.customer_accounts(@name, @pin)
-      Dialog::account_prompt 
-      account_info
-      @acct_num = Dialog::pick_your_account
-      if !@account_id_array.include?(@acct_num)
-        Dialog::fixnum_error
-
-      else
-        @account = bank.load_account(@acct_num)
-        @cust_id = bank.find_customer_id(@name, @pin)
-        puts @account.return_balance(@cust_id)
-      end
-      account_choice
-
-    elsif action == "deposit"
-      Dialog::space
-      @acct_list = @bank.customer_accounts(@name, @pin) 
-      Dialog::account_prompt 
-      account_info
-      @acct_num = Dialog::pick_your_account
-      if !@account_id_array.include?(@acct_num)
-        Dialog::fixnum_error
-
-      else
-        account = bank.load_account(@acct_num)
-        amount = Dialog::deposit_amount
-        account.deposit(amount)
-        account.save_to_db
-      end
-      account_choice
-
-    elsif action == "withdraw"
-      Dialog::space
-      @acct_list = @bank.customer_accounts(@name, @pin) 
-      Dialog::account_prompt 
-      account_info
-      @acct_num = Dialog::pick_your_account
-      if !@account_id_array.include?(@acct_num)
-        Dialog::fixnum_error
-
-      else
-        account = bank.load_account(@acct_num)
-        amount = Dialog::withdraw_amount
-        account.withdraw(amount)
-        account.save_to_db
-      end
-      account_choice
-      
-    elsif action == "end"
-      Dialog::goodbye_cust
-
+  def do_dep_with_and_bal
+    @acct_num = Dialog::pick_your_account
+    if !@account_id_array.include?(@acct_num)
+      Dialog::fixnum_error
     else
-      Dialog::wrong_entry
-      account_choice
+      @account = bank.load_account(@acct_num)
+      yield
     end
   end
 
-  def account_info
-    @account_id_array = []
-    @acct_list.each do |a|
-    print a["account_id"]
-    @account_id_array.push(a["account_id"])
+  def do_balance
+    @cust_id = bank.find_customer_id(@name, @pin)
+    puts @account.return_balance(@cust_id)
+  end
+
+  def do_deposit
+    amount = -1
+    while amount < 0
+      amount = Dialog::deposit_amount
+    end
+    @account.deposit(amount)
+    @account.save_to_db
+  end
+
+  def do_withdraw
+    amount = -1
+    while amount < 0
+      amount = Dialog::withdraw_amount
+    end
+    @account.withdraw(amount)
+    @account.save_to_db
+  end
+
+  def account_choice # Asks user if they want to deposit/withdraw, view current balance, or end their session.
+    action = Dialog::how_can_we_help_you
+    case action
+    when "balance"
+      show_accounts
+      do_dep_with_and_bal {do_balance}
+      account_choice
+    when "deposit"
+      show_accounts
+      do_dep_with_and_bal {do_deposit}
+      account_choice
+    when "withdraw"
+      show_accounts
+      do_dep_with_and_bal {do_withdraw}
+      account_choice
+    when "end"
+      Dialog::goodbye_cust
+    else
+      Dialog::wrong_entry
+      account_choice
     end
   end
 end

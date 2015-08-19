@@ -61,8 +61,8 @@ class Bank
   # Returns true if name and pin match are found or false if not found; table 
   # parameter should be either "customers" or "managers"
   def verify_pin(name, pin, table)
-    db.execute("SELECT 1 FROM #{table} WHERE name = ? AND pin = ?", 
-      name, pin).length > 0
+    db.execute("SELECT 1 FROM #{table} WHERE LOWER(name) = ? AND pin = ?", 
+      name.downcase, pin).length > 0
   end
 
   # Returns list of all bank accounts as an array of hashes. Requires manager 
@@ -75,14 +75,14 @@ class Bank
   # Returns true if name exists in given table; table parameter should be either
   # "customers" or "managers"
   def name_exists?(name, table)
-    db.execute("SELECT 1 FROM #{table} WHERE name = ?", 
-      name).length > 0
+    db.execute("SELECT 1 FROM #{table} WHERE LOWER(name) = ?", 
+      name.downcase).length > 0
   end
 
   # Returns customer_id of customer found with name and pin
   def find_customer_id(name, pin)
-    customer = db.execute("SELECT * FROM customers WHERE name = ? AND pin = ?", 
-      name, pin)
+    customer = db.execute("SELECT * FROM customers WHERE LOWER(name) = ? AND pin = ?", 
+      name.downcase, pin)
     return customer[0]["customer_id"]
   end
 
