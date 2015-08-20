@@ -108,6 +108,7 @@ module Display
       print "\n"
       print 'Account #' + a["account_id"].to_s + "  -----  " + "Balance: " +
       a["balance"].to_s
+      print "\n"
       account_id_array.push(a["account_id"])
     end
     account_id_array

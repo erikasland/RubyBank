@@ -25,8 +25,8 @@ class BankFlow
   def signin
     @name = Dialog::signin_name
     @pin = Dialog::signin_pin
-    @customer_id = @bank.find_customer_id(@name, @pin) 
     if bank.name_exists?(@name, "customers") == true && bank.verify_pin(@name, @pin, "customers") == true
+      @customer_id = @bank.find_customer_id(@name, @pin) 
       account_choice
 
     else
@@ -46,8 +46,7 @@ class BankFlow
         @customer = Customer.new(bank.db, @name, @pin)
         @customer.add_to_db
         @customer_id = @bank.find_customer_id(@name, @pin) 
-        @account = Account.new(bank.db, @customer_id)
-        @account.save_to_db 
+        bank.create_account(@customer_id)
         account_choice
 
       else
@@ -70,7 +69,7 @@ class BankFlow
     @account_id_array = Display::account_info(@acct_list)
   end
 
-  def do_dep_with_and_bal
+  def do_dep_and_with
     @acct_num = Dialog::pick_your_account
     if !@account_id_array.include?(@acct_num)
       Dialog::fixnum_error
@@ -78,11 +77,6 @@ class BankFlow
       @account = bank.load_account(@acct_num)
       yield
     end
-  end
-
-  def do_balance
-    @cust_id = bank.find_customer_id(@name, @pin)
-    puts @account.return_balance(@cust_id)
   end
 
   def do_deposit
@@ -104,8 +98,7 @@ class BankFlow
   end
 
   def do_new_account
-    @account = Account.new(bank.db, @customer_id)
-    @account.save_to_db 
+    bank.create_account(@customer_id)
     Dialog::new_account
   end
 
@@ -117,15 +110,14 @@ class BankFlow
       account_choice
     when "balance"
       show_accounts
-      do_dep_with_and_bal {do_balance}
       account_choice
     when "deposit"
       show_accounts
-      do_dep_with_and_bal {do_deposit}
+      do_dep_and_with {do_deposit}
       account_choice
     when "withdraw"
       show_accounts
-      do_dep_with_and_bal {do_withdraw}
+      do_dep_and_with {do_withdraw}
       account_choice
     when "end"
       Dialog::goodbye_cust
