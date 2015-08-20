@@ -98,6 +98,13 @@ class Bank
       customer_id)
   end
 
+  # Returns balance for an account
+  def return_balance(account_id)
+    account = db.execute("SELECT * FROM accounts WHERE account_id = ?", 
+      account_id)
+    return account[0]["balance"]
+  end
+
   # Returns Customer instance with customer from database
   def load_customer(customer_id)
     customer = find_customer_by_customer_id(customer_id)
@@ -108,9 +115,15 @@ class Bank
   def load_account(account_id)
     account = db.execute("SELECT * FROM accounts WHERE account_id = ?",
       account_id)
-    new_instance = Account.new(db, account[0]["customer_id"], false)
+    new_instance = Account.new(db, account[0]["customer_id"], account_id)
     new_instance.balance = account[0]["balance"]
     new_instance
+  end
+
+  # Creates new account for given customer_id
+  def create_account(customer_id)
+   db.execute("INSERT INTO accounts (customer_id,balance) VALUES (?,?)", 
+      customer_id, 0)
   end
 end
 
@@ -118,24 +131,25 @@ class Customer
   attr_accessor :db, :name, :pin
 
   def initialize(db, name, pin)
-    @db = db
+    @db = db 
     @name = name
     @pin = pin
-  end
-
+  end       
+  
   def add_to_db
     db.execute("INSERT INTO customers (name,pin) VALUES (?,?)", name, pin)
   end
 end
 
 class Account
-  attr_accessor :db, :balance, :new_account, :customer_id
+  attr_accessor :db, :balance, :new_account, :customer_id, :account_id
 
-  def initialize(db, customer_id, new_account = true)
+  def initialize(db, customer_id, account_id)
     @customer_id = customer_id
     @balance = 0.0
     @db = db
     @new_account = new_account
+    @account_id = account_id
   end
 
   # Subtracts amount from balance of account
@@ -148,21 +162,9 @@ class Account
     @balance += amount
   end
 
-  # Returns balance for an account
-  def return_balance(customer_id)
-    customer = db.execute("SELECT * FROM accounts WHERE customer_id = ?", 
-      customer_id)
-    return customer[0]["balance"]
-  end
-
   # Either adds or updates database
   def save_to_db
-    if new_account
-      db.execute("INSERT INTO accounts (customer_id,balance) VALUES (?,?)", 
-        customer_id, balance)
-    else
-      db.execute("UPDATE accounts SET balance = #{balance} WHERE customer_id = 
-        ?", customer_id)
-    end
+    db.execute("UPDATE accounts SET balance = #{balance} WHERE account_id = 
+      ?", account_id)
   end
 end
