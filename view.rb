@@ -39,8 +39,8 @@ module Dialog
   end
 
   def self.how_can_we_help_you # Dialog asking user to enter their choice.
-    print "\nHow can we help you? Would you like to 'deposit' or 'withdraw' to/from your account, view your current 'balance', or 'end' your session?"
-    print "\n\n(Please enter 'deposit', 'withdraw', 'balance', or 'end'): "
+    print "\nHow can we help you? Would you like to 'deposit' or 'withdraw' to/from your account, view your current 'balance', create a 'new account' or 'end' your session?"
+    print "\n\n(Please enter 'new account', 'deposit', 'withdraw', 'balance', or 'end'): "
     gets.chomp.downcase 
   end
 
@@ -95,6 +95,9 @@ module Dialog
   def self.fixnum_error
     print "\nIncorrect entry. Your account number should be a number. Please " +
     "enter only that number.\n"
+  end
+  def self.new_account
+    print "\nYour new account has been created. Congratulations!\n"
   end
 end
 

@@ -25,6 +25,7 @@ class BankFlow
   def signin
     @name = Dialog::signin_name
     @pin = Dialog::signin_pin
+    @customer_id = @bank.find_customer_id(@name, @pin) 
     if bank.name_exists?(@name, "customers") == true && bank.verify_pin(@name, @pin, "customers") == true
       account_choice
 
@@ -102,9 +103,18 @@ class BankFlow
     @account.save_to_db
   end
 
+  def do_new_account
+    @account = Account.new(bank.db, @customer_id)
+    @account.save_to_db 
+    Dialog::new_account
+  end
+
   def account_choice # Asks user if they want to deposit/withdraw, view current balance, or end their session.
     action = Dialog::how_can_we_help_you
     case action
+    when "new account"
+      do_new_account
+      account_choice
     when "balance"
       show_accounts
       do_dep_with_and_bal {do_balance}
