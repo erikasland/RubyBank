@@ -10,13 +10,10 @@ class BankFlow
 
   def signup_signin # Asks a user if they have a pre-existing account.
     response = Dialog::new_or_old_user
-
     if response == "yes" 
       signin
-
     elsif response == "no"
       make_an_account
-
     else
       signup_signin
     end
