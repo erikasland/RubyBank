@@ -57,20 +57,14 @@ module Dialog
     "account by entering its account number: "
     gets.chomp.to_i
   end 
-  
-  def self.positive_number_warning
-    puts "\nEntered amount must be a positive number."
-  end
 
   def self.deposit_amount # Asks for amount you would like to deposit
-    positive_number_warning
-    print "\nPlease enter the amount you would like to deposit: "
+    print "\nPlease enter the amount you would like to deposit: $"
     gets.chomp.to_f
   end
 
-  def self.withdraw_amount # Asks for amount you would like to deposit
-    positive_number_warning
-    print "\nPlease enter the amount you would like to withdraw: "
+  def self.withdraw_amount # Asks for amount you would like to withdraw
+    print "\nPlease enter the amount you would like to withdraw: $"
     gets.chomp.to_f
   end
 
@@ -84,7 +78,7 @@ module Dialog
   end
 
   def self.wrong_entry # Throws error if user enters something that computer doesn't recognize.
-    print "\nI don't understand. You are mumbling. Please say 'yes' or 'no'."
+    print "\nI don't understand. You are mumbling. Please say 'yes' or 'no'.\n"
   end
 
   def self.wrong_username_or_pin
@@ -92,12 +86,21 @@ module Dialog
     print ",\n"
   end
 
+  def self.incorrect_entry
+    print "\nIncorrect entry.\n"
+  end
+
   def self.fixnum_error
     print "\nIncorrect entry. Your account number should be a number. Please " +
     "enter only that number.\n"
   end
+
   def self.new_account
     print "\nYour new account has been created. Congratulations!\n"
+  end
+
+  def self.overdraft_protection
+    print "\nThe amount you attempted to withdraw would have left your account with a negative balance. Please deposit more money before attempting to withdraw said amount again. Thank you.\n"
   end
 end
 
@@ -106,7 +109,7 @@ module Display
     account_id_array = []
     acct_list.each do |a|
       print "\n"
-      print 'Account #' + a["account_id"].to_s + "  -----  " + "Balance: " +
+      print 'Account #' + a["account_id"].to_s + "  -----  " + "Balance: $" +
       a["balance"].to_s
       print "\n"
       account_id_array.push(a["account_id"])
