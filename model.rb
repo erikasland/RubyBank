@@ -162,11 +162,6 @@ class Account
     @balance += amount
   end
 
-  # Prints current account balance
-  def show_balance 
-    @balance
-  end
-
   # Either adds or updates database
   def save_to_db
     db.execute("UPDATE accounts SET balance = #{balance} WHERE account_id = 

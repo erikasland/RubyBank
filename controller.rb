@@ -85,11 +85,9 @@ class BankFlow
 
   def do_withdraw # Deposits customer's money into their account
     amount = Dialog::withdraw_amount
-    new_balance = @account.show_balance - amount
-    if new_balance < 0
+    if @account.balance - amount < 0
       Dialog::overdraft_protection
-      account_choice
-    else
+    else 
       @account.withdraw(amount)
       @account.save_to_db
     end
