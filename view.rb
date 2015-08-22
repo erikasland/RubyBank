@@ -92,13 +92,28 @@ module Dialog
     print ",\n"
   end
 
+  def self.incorrect_entry
+    print "\nIncorrect entry.\n"
+  end
+
   def self.fixnum_error
     print "\nIncorrect entry. Your account number should be a number. Please " +
     "enter only that number.\n"
   end
+
   def self.new_account
     print "\nYour new account has been created. Congratulations!\n"
   end
+
+  def self.are_you_a_manager
+    print "\nAre you a manager?\n"
+    gets.chomp.downcase 
+  end
+
+  def self.overdraft_protection
+    print "\nThe amount you attempted to withdraw would have left your account with a negative balance. Please deposit more money before attempting to withdraw said amount again. Thank you.\n"
+  end
+
 end
 
 module Display

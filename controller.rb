@@ -22,18 +22,17 @@ class BankFlow
     end
   end
 
-  def signin
+  def signin # Signs in pre-existing customer
     @name = Dialog::signin_name
     @pin = Dialog::signin_pin
     if bank.name_exists?(@name, "customers") == true && bank.verify_pin(@name, @pin, "customers") == true
       @customer_id = @bank.find_customer_id(@name, @pin) 
       account_choice
-
     else
       Dialog::wrong_username_or_pin
       signup_signin
     end
-  end
+  end 
 
   def make_an_account # Asks user if they want to make an account.
     answer = Dialog::greeting
@@ -41,35 +40,31 @@ class BankFlow
     if answer == "yes"
       @name = Dialog::account_name
       @pin = Dialog::enter_pin
-
       if bank.name_exists?(@name, "customers") == false
         @customer = Customer.new(bank.db, @name, @pin)
         @customer.add_to_db
         @customer_id = @bank.find_customer_id(@name, @pin) 
         bank.create_account(@customer_id)
         account_choice
-
       else
         Dialog::existing_account_error
         signin
       end
-
     elsif answer == "no"
       Dialog::goodbye
-
     else
       make_an_account
     end
   end
 
-  def show_accounts
+  def show_accounts # Shows customer's accounts
     Dialog::space
     @acct_list = @bank.customer_accounts(@name, @pin)
     Dialog::account_prompt
     @account_id_array = Display::account_info(@acct_list)
   end
 
-  def do_dep_and_with
+  def do_dep_and_with # Checks for correct entry and loads customer's accounts
     @acct_num = Dialog::pick_your_account
     if !@account_id_array.include?(@acct_num)
       Dialog::fixnum_error
@@ -79,7 +74,7 @@ class BankFlow
     end
   end
 
-  def do_deposit
+  def do_deposit # Deposits customer's money into their account
     amount = -1
     while amount < 0
       amount = Dialog::deposit_amount
@@ -88,16 +83,19 @@ class BankFlow
     @account.save_to_db
   end
 
-  def do_withdraw
-    amount = -1
-    while amount < 0
-      amount = Dialog::withdraw_amount
+  def do_withdraw # Deposits customer's money into their account
+    amount = Dialog::withdraw_amount
+    new_balance = @account.show_balance - amount
+    if new_balance < 0
+      Dialog::overdraft_protection
+      account_choice
+    else
+      @account.withdraw(amount)
+      @account.save_to_db
     end
-    @account.withdraw(amount)
-    @account.save_to_db
   end
 
-  def do_new_account
+  def do_new_account # Creates a new account for a customer
     bank.create_account(@customer_id)
     Dialog::new_account
   end
@@ -127,6 +125,5 @@ class BankFlow
     end
   end
 end
-
 
 BankFlow.new.signup_signin # Starts Ruby Bank
