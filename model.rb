@@ -8,18 +8,21 @@ class Bank
   end
 
   # Creates database file if it doesn't exist, sets results to be outputted as
-  # hashes, turns on foreign key support, and creates tables if they don't exist
+  # hashes, turns on foreign key support, creates tables if they don't exist,
+  # and adds initial manager if none exist
   def initialize_database
     @db = SQLite3::Database.new("bank.db")
     db.results_as_hash = true
     db.execute("PRAGMA foreign_keys = ON")
     accounts_table_exists = db.execute("SELECT 1 FROM sqlite_master WHERE 
       type='table' AND name= ?", "accounts").length > 0
+    managers_exist = db.execute("SELECT * FROM managers").length > 0
     unless accounts_table_exists
       create_customers_table
       create_accounts_table
       create_managers_table
     end
+    add_manager("admin", 1111) if !managers_exist
   end
 
   # Creates accounts table in database file
@@ -81,9 +84,14 @@ class Bank
 
   # Returns customer_id of customer found with name and pin
   def find_customer_id(name, pin)
-    customer = db.execute("SELECT * FROM customers WHERE LOWER(name) = ? AND pin = ?", 
-      name.downcase, pin)
-    return customer[0]["customer_id"]
+    customer = db.execute("SELECT * FROM customers WHERE LOWER(name) = ? AND pin = ?", name.downcase, pin)
+    customer[0]["customer_id"]
+  end
+
+  # Returns customer_id of manager found with name and pin
+  def find_manager_id(name, pin)
+    manager = db.execute("SELECT * FROM managers WHERE LOWER(name) = ? AND pin = ?", name.downcase, pin)
+    manager[0]["id"]
   end
 
   # Returns accounts for customer
@@ -96,6 +104,11 @@ class Bank
   def find_customer_by_customer_id(customer_id)
     db.execute("SELECT * FROM customers WHERE customer_id = ?",
       customer_id)
+  end
+
+  # Returns manager found with given id
+  def find_manager_by_id(id)
+    db.execute("SELECT * FROM managers WHERE id = ?", id)
   end
 
   # Returns balance for an account
@@ -120,6 +133,12 @@ class Bank
     new_instance
   end
 
+  # Returns Account instance with account from database
+  def load_manager(id)
+    manager = find_manager_by_id(id)
+    Manager.new(db, manager[0]["name"], manager[0]["pin"])
+  end
+
   # Creates new account for given customer_id
   def create_account(customer_id)
    db.execute("INSERT INTO accounts (customer_id,balance) VALUES (?,?)", 
@@ -137,8 +156,12 @@ class Customer
   end       
   
   def add_to_db
-    db.execute("INSERT INTO customers (name,pin) VALUES (?,?)", name, pin)
+    db.execute("INSERT INTO #{self.class.name.downcase + "s"} (name,pin) VALUES
+      (?,?)", name, pin)
   end
+end
+
+class Manager < Customer
 end
 
 class Account
