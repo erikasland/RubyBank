@@ -78,10 +78,10 @@ class Bank
 
   # Transfers "amount" of money from the "sender" account to "receiver" account
   def money_transfer(sender_account_id, receiver_account_id, amount)
-    db.execute("UPDATE accounts SET balance = (balance - #{amount}) WHERE account_id = ?", 
-      sender_account_id)
-    db.execute("UPDATE accounts SET balance = (balance + #{amount}) WHERE account_id = ?", 
-      receiver_account_id)
+    db.execute("UPDATE accounts SET balance = (balance - #{amount}) WHERE 
+      account_id = ?", sender_account_id)
+    db.execute("UPDATE accounts SET balance = (balance + #{amount}) WHERE 
+      account_id = ?", receiver_account_id)
   end
 
   # Returns true if name exists in given table; table parameter should be either
