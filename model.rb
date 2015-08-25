@@ -16,7 +16,8 @@ class Bank
     db.execute("PRAGMA foreign_keys = ON")
     accounts_table_exists = db.execute("SELECT 1 FROM sqlite_master WHERE 
       type='table' AND name= ?", "accounts").length > 0
-    managers_exist = db.execute("SELECT * FROM managers").length > 0
+    managers_exist = db.execute("SELECT 1 FROM sqlite_master WHERE 
+      type='table' AND name= ?", "managers").length > 0
     unless accounts_table_exists
       create_customers_table
       create_accounts_table
