@@ -134,12 +134,12 @@ module Dialog
 
   def self.which_account
     print "\n\nPlease select your account number (Numbers only please): "
-    gets.chomp.to_f
+    gets.chomp.to_i
   end
 
   def self.which_customer
     print "\n\nPlease select your customer number (Numbers only please): "
-    gets.chomp.to_f
+    gets.chomp.to_i
   end
 
   def self.transfer_acct_1
