@@ -11,7 +11,12 @@ class BankFlow
   def signup_signin # Asks a user if they have a pre-existing account.
     response = Dialog::new_or_old_user
     if response == "yes" 
-      signin
+      answer = Dialog::are_you_a_manager
+      if answer == "yes"
+        manager_signin
+      else
+        signin
+      end
     elsif response == "no"
       make_an_account
     else
@@ -30,6 +35,17 @@ class BankFlow
       signup_signin
     end
   end 
+
+  def manager_signin
+    @man_name = Dialog::enter_man_name
+    @man_pin = Dialog::signin_pin
+    if bank.name_exists?(@man_name, "managers") == true && bank.verify_pin(@man_name, @man_pin, "managers") == true
+      @man_id = bank.find_manager_id(@man_name, @man_pin) 
+      manager_choice
+    else
+      signup_signin
+    end
+  end
 
   def make_an_account # Asks user if they want to make an account.
     answer = Dialog::greeting
@@ -56,7 +72,7 @@ class BankFlow
 
   def show_accounts # Shows customer's accounts
     Dialog::space
-    @acct_list = @bank.customer_accounts(@name, @pin)
+    @acct_list = bank.customer_accounts(@name, @pin)
     Dialog::account_prompt
     @account_id_array = Display::account_info(@acct_list)
   end
@@ -117,6 +133,80 @@ class BankFlow
     else
       Dialog::wrong_entry
       account_choice
+    end
+  end
+
+  def account_select # Displays user customer accounts and asks you to chose the one you would like to alter
+    Dialog::space
+    @acct_list = bank.account_list(@man_name, @man_pin)
+    @account_id_array = Display::account_info2(@acct_list)
+    account_num = Dialog::which_account
+    @account = bank.load_account(account_num)
+    alter_account
+  end
+
+  def show_man_balance # Prepares data needed to utilize the show_accounts method
+    Dialog::space
+    @acct_list = bank.account_list(@man_name, @man_pin)
+    @account_id_array = Display::account_info2(@acct_list)  
+  end
+  
+  def transfer_funds # Lets a manager transfer funds from one account to another.
+    Dialog::space
+    @acct_list = bank.account_list(@man_name, @man_pin)
+    @account_id_array = Display::account_info2(@acct_list)
+    from = Dialog::transfer_acct_1
+    to = Dialog::transfer_acct_2
+    how_much = Dialog::transfer_ammount
+    bank.money_transfer(from, to, how_much)
+  end
+
+  def new_manager # Allows pre-existing manager to create a new manager
+    name = Dialog::account_name 
+    pin = Dialog::account_pin
+    @manager = Manager.new(bank.db, name, pin)
+    @manager.add_to_db
+    manager_choice
+  end
+
+  def manager_choice # Asks a manager if your would like to alter a customer account or create a new manager.
+    ans = Dialog::man_choice
+    case ans 
+    when 'alter'
+      account_select
+      alter_account
+    when 'create'
+      new_manager
+    when 'end'
+      Dialog::man_goodbye
+    else
+      Dialog::wrong_entry
+      manager_choice
+    end
+  end
+
+  def alter_account # Asks user if they want to deposit/withdraw, view current balance, or end their session.
+    action = Dialog::how_can_we_help_you_man
+    case action
+    when "new account"
+      do_new_account
+      alter_account
+    when "balance"
+      show_man_balance
+      alter_account
+    when "deposit"
+      do_deposit  
+      alter_account
+    when "withdraw"
+      do_withdraw
+      alter_account
+    when "transfer"
+      transfer_funds
+    when "end"
+      manager_choice
+    else
+      Dialog::wrong_entry
+      alter_account
     end
   end
 end
