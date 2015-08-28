@@ -14,8 +14,12 @@ class BankFlow
       answer = Dialog::are_you_a_manager
       if answer == "yes"
         manager_signin
-      else
+      elsif answer == "no"
+        Dialog::not_a_manager
         signin
+      else
+        Dialog::wrong_entry
+        signup_signin
       end
     elsif response == "no"
       make_an_account
@@ -43,7 +47,8 @@ class BankFlow
       @man_id = bank.find_manager_id(@man_name, @man_pin) 
       manager_choice
     else
-      signup_signin
+      Dialog::wrong_username_or_pin
+      manager_signin
     end
   end
 
@@ -139,22 +144,27 @@ class BankFlow
   def account_select # Displays user customer accounts and asks you to chose the one you would like to alter
     Dialog::space
     @acct_list = bank.account_list(@man_name, @man_pin)
-    @account_id_array = Display::account_info2(@acct_list)
+    @account_id_array = Display::account_info(@acct_list)
     account_num = Dialog::which_account
-    @account = bank.load_account(account_num)
-    alter_account
+    if account_num == account_num.to_i.to_s
+      @account = bank.load_account(account_num.to_i)
+      alter_account
+    else
+      Dialog::wrong_entry
+      account_select
+    end
   end
 
   def show_man_balance # Prepares data needed to utilize the show_accounts method
     Dialog::space
     @acct_list = bank.account_list(@man_name, @man_pin)
-    @account_id_array = Display::account_info2(@acct_list)  
+    @account_id_array = Display::account_info(@acct_list)  
   end
   
   def transfer_funds # Lets a manager transfer funds from one account to another.
     Dialog::space
     @acct_list = bank.account_list(@man_name, @man_pin)
-    @account_id_array = Display::account_info2(@acct_list)
+    @account_id_array = Display::account_info(@acct_list)
     from = Dialog::transfer_acct_1
     to = Dialog::transfer_acct_2
     how_much = Dialog::transfer_ammount
@@ -175,6 +185,7 @@ class BankFlow
     when 'alter'
       account_select
       alter_account
+      manager_choice
     when 'create'
       new_manager
     when 'end'
@@ -202,8 +213,9 @@ class BankFlow
       alter_account
     when "transfer"
       transfer_funds
+      alter_account
     when "end"
-      manager_choice
+      puts "end"
     else
       Dialog::wrong_entry
       alter_account

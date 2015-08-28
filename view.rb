@@ -50,7 +50,7 @@ module Dialog
 
   def self.how_can_we_help_you_man # Dialog asking user to enter their choice.
     print "\nWould you like to 'transfer' money between accounts, deposit' or 'withdraw' to/from their account, view your current 'balance', create a 'new account' or 'end' your session?"
-    print "\n\n(Please enter 'new account', 'deposit', 'withdraw', 'balance', or 'end'): "
+    print "\n\n(Please enter 'new account', 'transfer', 'deposit', 'withdraw', 'balance', or 'end'): "
     gets.chomp.downcase 
   end
 
@@ -87,17 +87,15 @@ module Dialog
     print "\nInvalid PIN number. Try again."
   end
 
-  def self.wrong_entry # Throws error if user enters something that computer doesn't recognize.
-    print "\nI don't understand. You are mumbling. Please say 'yes' or 'no'.\n"
+  # Throws error if user enters something that computer doesn't recognize.
+  def self.wrong_entry
+    print "\nThat is not a valid entry, please try again from the approved " +
+    "options.\n"
   end
 
   def self.wrong_username_or_pin
     print "\nYou have either entered an incorrect name or PIN. Please try again"
     print ",\n"
-  end
-
-  def self.incorrect_entry
-    print "\nIncorrect entry.\n"
   end
 
   def self.fixnum_error
@@ -119,6 +117,11 @@ module Dialog
     gets.chomp
   end
 
+  def self.not_a_manager
+    print "\nYou answered \"no,\" you are not a manager.\n"
+    print "Please enter your normal customer account info.\n"
+  end
+
   def self.man_choice
     print "\nHello sir/mam! Welcome to YOUR bank! Would you like to 'alter' customer accounts, 'create' a new manager, or 'end' your session?? ('alter', 'create', 'end') "
     gets.chomp.downcase
@@ -134,7 +137,7 @@ module Dialog
 
   def self.which_account
     print "\n\nPlease select your account number (Numbers only please): "
-    gets.chomp.to_i
+    gets.chomp
   end
 
   def self.which_customer
@@ -158,20 +161,16 @@ module Dialog
   end
 
   end
+  
 module Display
-  def self.account_info(acct_list)
-    account_id_array = []
-    acct_list.each do |a|
-      print "\n"
-      print 'Account #' + a["account_id"].to_s + "  -----  " + "Balance: $" +
-      a["balance"].to_s
-      print "\n"
-      account_id_array.push(a["account_id"])
-    end
-    account_id_array
+
+  # Takes in number and returns string formatted as dollars and cents (e.g. 10
+  # becomes "10.00")
+  def self.money_format(number)
+    "%.2f" % number
   end
 
-  def self.account_info2(acct_list)
+  def self.account_info(acct_list)
     acct_list.chunk{|h| h["customer_id"]}
     .each do |customer, a| a
       .each.with_index do |h, i|
