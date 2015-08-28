@@ -172,14 +172,14 @@ module Display
   end
 
   def self.account_info2(acct_list)
-    account_id_array = []
-    acct_list.each do |a|
-      print "\n"
-      print 'Customer #' + a["customer_id"].to_s + ' Account #' + a["account_id"].to_s + "  -----  " + "Balance: $" +
-      a["balance"].to_s
-      print "\n"
-      account_id_array.push(a["account_id"])
+    acct_list.chunk{|h| h["customer_id"]}
+    .each do |customer, a| a
+      .each.with_index do |h, i|
+        puts \
+          (("Customer ##{customer} " if i.zero?)).to_s.ljust(12) +
+          "Account ##{h["account_id"]}  -----  Balance: $#{h["balance"]}",
+          nil
+      end
     end
-    account_id_array
   end
 end
