@@ -80,7 +80,6 @@ class BankFlow
   def show_accounts # Shows customer's accounts
     Dialog::space
     @acct_list = bank.customer_accounts(@name, @pin)
-    Dialog::account_prompt
     @account_id_array = Display::account_info(@acct_list)
   end
 
@@ -152,7 +151,7 @@ class BankFlow
     @acct_list = bank.account_list(@man_name, @man_pin)
     @account_id_array = Display::account_info(@acct_list)
     account_num = Dialog::which_account
-    if account_num == account_num.to_i.to_s
+    if bank.account_exists?(account_num)
       @account = bank.load_account(account_num.to_i)
     else
       Dialog::wrong_entry
@@ -211,7 +210,14 @@ class BankFlow
     action = Dialog::how_can_we_help_you_man
     case action
     when "new account"
-      do_new_account
+      show_man_balance
+      choice = Dialog::which_customer
+      if bank.find_customer_by_customer_id(choice).length > 0
+        @customer_id = choice
+        do_new_account
+      else
+        Dialog::wrong_entry
+      end
       alter_account
     when "balance"
       show_man_balance

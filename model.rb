@@ -91,6 +91,12 @@ class Bank
       name.downcase).length > 0
   end
 
+  # Returns true if acount_id exists
+  def account_exists?(account_id)
+    db.execute("SELECT 1 FROM accounts WHERE account_id = ?", 
+      account_id).length > 0
+  end
+
   # Returns customer_id of customer found with name and pin
   def find_customer_id(name, pin)
     customer = db.execute("SELECT * FROM customers WHERE LOWER(name) = ? AND pin = ?", name.downcase, pin)

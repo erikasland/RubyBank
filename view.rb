@@ -58,10 +58,6 @@ module Dialog
     print "\n"
   end
 
-  def self.account_prompt
-    print "Your total accounts: " 
-  end
-
   def self.pick_your_account
     print "\n\n\nYour list of accounts is displayed above. Please select an " +
     "account by entering its account number: "
