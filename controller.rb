@@ -31,7 +31,8 @@ class BankFlow
   def signin # Signs in pre-existing customer
     @name = Dialog::signin_name
     @pin = Dialog::signin_pin
-    if bank.name_exists?(@name, "customers") == true && bank.verify_pin(@name, @pin, "customers") == true
+    if bank.name_exists?(@name, "customers") == true && bank.verify_pin(@name, 
+      @pin, "customers") == true
       @customer_id = @bank.find_customer_id(@name, @pin) 
       account_choice
     else
@@ -43,7 +44,8 @@ class BankFlow
   def manager_signin
     @man_name = Dialog::enter_man_name
     @man_pin = Dialog::signin_pin
-    if bank.name_exists?(@man_name, "managers") == true && bank.verify_pin(@man_name, @man_pin, "managers") == true
+    if bank.name_exists?(@man_name, "managers") == true && 
+      bank.verify_pin(@man_name, @man_pin, "managers") == true
       @man_id = bank.find_manager_id(@man_name, @man_pin) 
       manager_choice
     else
@@ -116,7 +118,9 @@ class BankFlow
     Dialog::new_account
   end
 
-  def account_choice # Asks user if they want to deposit/withdraw, view current balance, or end their session.
+  # Asks user if they want to deposit/withdraw, view current balance, or end 
+  # their session.
+  def account_choice
     action = Dialog::how_can_we_help_you
     case action
     when "new account"
@@ -141,27 +145,30 @@ class BankFlow
     end
   end
 
-  def account_select # Displays user customer accounts and asks you to chose the one you would like to alter
+  # Displays user customer accounts and asks you to chose the one you would like
+  # to alter
+  def account_select
     Dialog::space
     @acct_list = bank.account_list(@man_name, @man_pin)
     @account_id_array = Display::account_info(@acct_list)
     account_num = Dialog::which_account
     if account_num == account_num.to_i.to_s
       @account = bank.load_account(account_num.to_i)
-      alter_account
     else
       Dialog::wrong_entry
       account_select
     end
   end
 
-  def show_man_balance # Prepares data needed to utilize the show_accounts method
+  # Prepares data needed to utilize the show_accounts method
+  def show_man_balance
     Dialog::space
     @acct_list = bank.account_list(@man_name, @man_pin)
     @account_id_array = Display::account_info(@acct_list)  
   end
   
-  def transfer_funds # Lets a manager transfer funds from one account to another.
+  # Lets a manager transfer funds from one account to another.
+  def transfer_funds
     Dialog::space
     @acct_list = bank.account_list(@man_name, @man_pin)
     @account_id_array = Display::account_info(@acct_list)
@@ -179,7 +186,9 @@ class BankFlow
     manager_choice
   end
 
-  def manager_choice # Asks a manager if your would like to alter a customer account or create a new manager.
+  # Asks a manager if you would like to alter a customer account or create a new
+  # manager.
+  def manager_choice
     ans = Dialog::man_choice
     case ans 
     when 'alter'
@@ -196,7 +205,9 @@ class BankFlow
     end
   end
 
-  def alter_account # Asks user if they want to deposit/withdraw, view current balance, or end their session.
+  # Asks user if they want to deposit/withdraw, view current balance, or end 
+  # their session.
+  def alter_account
     action = Dialog::how_can_we_help_you_man
     case action
     when "new account"
@@ -215,7 +226,7 @@ class BankFlow
       transfer_funds
       alter_account
     when "end"
-      puts "end"
+      return
     else
       Dialog::wrong_entry
       alter_account
